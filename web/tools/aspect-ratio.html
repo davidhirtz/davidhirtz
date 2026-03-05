@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Aspect Ratio Calculator</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+        input { width: 100%; padding: 0.5rem; font-size: 1rem; box-sizing: border-box; }
+        #result { margin-top: 1rem; font-size: 1.2rem; font-family: monospace; color: #333; min-height: 1.5em; cursor: pointer; }
+        #error { color: #c00; margin-top: 0.5rem; font-size: 0.9rem; min-height: 1em; }
+        code{background: #f0f0f0; padding: 0.2rem 0.4rem; border-radius: 3px;}
+    </style>
+</head>
+<body>
+    <h1>Aspect Ratio Calculator</h1>
+    <p>Enter dimensions like <code>1920 x 1080</code>, <code>16 / 9</code>, or <code>aspect-ratio: 230.1 / 20</code></p>
+    <input type="text" id="input" placeholder="e.g. 1920 x 1080" />
+    <div id="error"></div>
+    <div id="result"></div>
+
+    <script>
+        function gcd(a, b) {
+            return b < 1e-10 ? a : gcd(b, a % b);
+        }
+
+        function parseNumbers(str) {
+            const matches = str.match(/(\d+(?:\.\d+)?)/g);
+            if (matches && matches.length >= 2) {
+                const w = parseFloat(matches[matches.length - 2]);
+                const h = parseFloat(matches[matches.length - 1]);
+                return [w, h];
+            }
+            return null;
+        }
+
+        function simplifyRatio(w, h) {
+            // Scale floats to integers by finding max decimal places
+            const decW = (w.toString().split('.')[1] || '').length;
+            const decH = (h.toString().split('.')[1] || '').length;
+            const scale = Math.pow(10, Math.max(decW, decH));
+
+            const intW = Math.round(w * scale);
+            const intH = Math.round(h * scale);
+
+            const divisor = gcd(intW, intH);
+            const simpW = intW / divisor;
+            const simpH = intH / divisor;
+
+            // Prefer simplified only if it results in smaller integers
+            if (simpW < intW || simpH < intH) {
+                return [simpW, simpH];
+            }
+
+            // Fall back to original scaled values if already at their simplest
+            return [intW, intH];
+        }
+
+        function calculate(value) {
+            const errorEl = document.getElementById('error');
+            const resultEl = document.getElementById('result');
+
+            if (!value.trim()) {
+                errorEl.textContent = '';
+                resultEl.textContent = '';
+                return;
+            }
+
+            const nums = parseNumbers(value);
+            if (!nums) {
+                errorEl.textContent = 'Could not find two numbers in the input.';
+                resultEl.textContent = '';
+                return;
+            }
+
+            const [w, h] = nums;
+            if (h === 0) {
+                errorEl.textContent = 'Height cannot be zero.';
+                resultEl.textContent = '';
+                return;
+            }
+
+            errorEl.textContent = '';
+            const [rw, rh] = simplifyRatio(w, h);
+            resultEl.textContent = `aspect-ratio: ${rw} / ${rh};`;
+
+            // Auto-select the result text
+            const range = document.createRange();
+            range.selectNodeContents(resultEl);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+        const input = document.getElementById('input');
+        input.addEventListener('input', () => calculate(input.value));
+        input.addEventListener('blur', () => calculate(input.value));
+
+        // Allow clicking result to re-select
+        document.getElementById('result').addEventListener('click', function () {
+            if (!this.textContent) return;
+            const range = document.createRange();
+            range.selectNodeContents(this);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        });
+    </script>
+</body>
+</html>
