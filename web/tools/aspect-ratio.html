@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Aspect Ratio Calculator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
     <style>
-        body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+        body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
         input { width: 100%; padding: 0.5rem; font-size: 1rem; box-sizing: border-box; }
         #result { margin-top: 1rem; font-size: 1.2rem; font-family: monospace; color: #333; min-height: 1.5em; cursor: pointer; }
         #error { color: #c00; margin-top: 0.5rem; font-size: 0.9rem; min-height: 1em; }
@@ -13,7 +14,7 @@
 </head>
 <body>
     <h1>Aspect Ratio Calculator</h1>
-    <p>Enter dimensions like <code>1920 x 1080</code>, <code>16 / 9</code>, or <code>aspect-ratio: 230.1 / 20</code></p>
+    <p>Enter dimensions like <code>1920 x 1080</code>, <code>16 / 9</code>, <code>aspect-ratio: 230 / 20</code>, or <code>viewBox="0 0 30 20"</code> to get the correct aspect ratio:</p>
     <input type="text" id="input" placeholder="e.g. 1920 x 1080" />
     <div id="error"></div>
     <div id="result"></div>
@@ -26,6 +27,7 @@
         function parseNumbers(str) {
             const matches = str.match(/(\d+(?:\.\d+)?)/g);
             if (matches && matches.length >= 2) {
+                // viewBox="minX minY width height" — always use the last two numbers
                 const w = parseFloat(matches[matches.length - 2]);
                 const h = parseFloat(matches[matches.length - 1]);
                 return [w, h];
