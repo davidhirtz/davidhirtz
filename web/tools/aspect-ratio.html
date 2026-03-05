@@ -82,18 +82,20 @@
             errorEl.textContent = '';
             const [rw, rh] = simplifyRatio(w, h);
             resultEl.textContent = `aspect-ratio: ${rw} / ${rh};`;
+        }
 
-            // Auto-select the result text
+        const input = document.getElementById('input');
+        input.addEventListener('input', () => calculate(input.value));
+        input.addEventListener('blur', () => {
+            calculate(input.value);
+            const resultEl = document.getElementById('result');
+            if (!resultEl.textContent) return;
             const range = document.createRange();
             range.selectNodeContents(resultEl);
             const sel = window.getSelection();
             sel.removeAllRanges();
             sel.addRange(range);
-        }
-
-        const input = document.getElementById('input');
-        input.addEventListener('input', () => calculate(input.value));
-        input.addEventListener('blur', () => calculate(input.value));
+        });
 
         // Allow clicking result to re-select
         document.getElementById('result').addEventListener('click', function () {
