@@ -1,0 +1,36 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  deploy:
+    name: Deploy on ${{ vars.SSH_HOST }}
+    runs-on: ubuntu-latest
+    if: ${{ vars[format('DEPLOY_PATH_{0}', github.head_ref || github.ref_name )] != '' }}
+
+    env:
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+      DEPLOY_PATH: ${{ vars[format('DEPLOY_PATH_{0}', github.head_ref || github.ref_name )] }}
+      PHP: ${{ vars.PHP || 'php' }}
+
+    steps:
+      - name: Display Branch Name
+        run: echo "$BRANCH"
+
+      - name: Display Deploy Path
+        run: echo "$DEPLOY_PATH"
+
+      - name: Deploy on Server
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ vars.SSH_HOST }}
+          username: ${{ vars.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          envs: DEPLOY_PATH,PHP
+          script: |
+            set -e
+            cd "$DEPLOY_PATH"
+            git pull
