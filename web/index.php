@@ -9,7 +9,8 @@ ob_implicit_flush(false);
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="color-scheme" content="light dark">
 	<title>David Hirtz</title>
-	<meta name="description" content="Freelance software engineer and technical consultant based in Munich, Germany">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%8C%EF%B8%8F%3C/text%3E%3C/svg%3E">
+	<meta name="description" content="Freelance software engineer and technical consultant in Munich, Germany, building custom web software and helping teams integrate AI into their workflows.">
 	<style>
 		:root{--fg:#000;--muted:#666;--bg:#fff}
 		@media (prefers-color-scheme:dark){:root{--fg:#eee;--muted:#999;--bg:#111}}
