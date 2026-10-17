@@ -42,7 +42,6 @@ ob_implicit_flush(false);
 	</a>
 </nav>
 <script>
-	// The address is stored reversed and only assembled once a visitor interacts with the link.
 	(()=>{const m=document.getElementById('m'),r=()=>{m.href='mailto:'+[...'moc.ztrihdivad@olleh'].reverse().join('')};['pointerover','focus','touchstart'].forEach(e=>m.addEventListener(e,r,{once:true,passive:true}));m.addEventListener('click',r)})();
 </script>
 </body>
