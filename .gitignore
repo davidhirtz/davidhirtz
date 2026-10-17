@@ -1,6 +1,6 @@
 .DS_Store
+/.idea
 /node_modules
 /packages
 /vendor
 Thumbs.db
-/.idea
