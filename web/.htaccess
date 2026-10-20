@@ -7,5 +7,6 @@ RewriteCond %{HTTP_HOST} !\.(localhost|localhost:8080)$ [NC]
 RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 RewriteCond %{HTTPS} off [NC]
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https [NC]
 RewriteCond %{HTTP_HOST} !\.(localhost|localhost:8080)$ [NC]
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
