@@ -1,6 +1,15 @@
 <?php
 ob_start();
 ob_implicit_flush(false);
+
+// Encodes text as HTML entities with a hidden decoy, keeping it out of plain-text scrapers
+$obfuscate = static function (string $text): string {
+	$html = '';
+	foreach (mb_str_split($text) as $i => $char) {
+		$html .= ($i === 2 ? '<i hidden>qx</i>' : '') . '&#' . mb_ord($char) . ';';
+	}
+	return $html;
+};
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +36,13 @@ ob_implicit_flush(false);
 		nav a:hover,nav a:focus-visible{opacity:1;transform:translateY(-2px)}
 		nav svg{display:block;width:1.5rem;height:1.5rem;fill:currentColor}
 		nav svg.s{fill:none;stroke:currentColor;stroke-width:1.75;stroke-linejoin:round;stroke-linecap:round}
+		details{margin-top:4rem;font:0.75em/1.6 monospace;letter-spacing:0.1em;color:var(--muted)}
+		summary{display:inline-block;cursor:pointer;list-style:none;transition:color 0.2s}
+		summary::-webkit-details-marker{display:none}
+		summary:hover,summary:focus-visible,details[open] summary{color:var(--fg)}
+		details p{margin:1rem 0 0;font:inherit;letter-spacing:inherit}
+		details a{color:inherit}
+		details strong{display:block;margin-top:2rem;color:var(--fg);font-weight:normal}
 	</style>
 </head>
 <body>
@@ -42,8 +58,21 @@ ob_implicit_flush(false);
 		<svg class="s" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.75" y="4.75" width="18.5" height="14.5" rx="1.5"/><path d="m3.5 6.5 8.5 6.5 8.5-6.5"/></svg>
 	</a>
 </nav>
+<details id="impressum" class="in" style="--i:5" lang="de">
+	<summary>Impressum</summary>
+	<p>Angaben gemäß § 5 DDG</p>
+	<p>David Hirtz<br><?= implode('<br>', array_map($obfuscate, explode("\n", base64_decode('QXJjaXNzdHJhw59lIDQ3CjgwNzk5IE3DvG5jaGVu')))) ?><br>Deutschland</p>
+	<p>E-Mail: <span id="e">hello (at) davidhirtz (dot) com</span></p>
+	<p>USt-IdNr.: DE239154165</p>
+	<p><strong>Datenschutz</strong></p>
+	<p>Verantwortlich für die Datenverarbeitung ist David Hirtz (Anschrift und E-Mail siehe oben).</p>
+	<p>Beim Aufruf dieser Seite verarbeitet der Webserver technisch notwendige Daten (IP-Adresse, Datum und Uhrzeit, aufgerufene Adresse, Referrer, Browser und Betriebssystem), um die Seite auszuliefern und ihre Sicherheit zu gewährleisten. Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Diese Server-Logdaten werden nur so lange gespeichert, wie es für diese Zwecke erforderlich ist.</p>
+	<p>Diese Seite setzt keine Cookies, verwendet kein Tracking und lädt keine Inhalte von Drittanbietern.</p>
+	<p>Wenn Sie mich per E-Mail kontaktieren, verarbeite ich Ihre Angaben ausschließlich zur Bearbeitung Ihrer Anfrage (Art. 6 Abs. 1 lit. b bzw. f DSGVO).</p>
+	<p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung, auf Datenübertragbarkeit sowie auf Widerspruch gegen die Verarbeitung. Zudem können Sie sich bei einer Datenschutz-Aufsichtsbehörde beschweren, etwa beim Bayerischen Landesamt für Datenschutzaufsicht.</p>
+</details>
 <script>
-	(()=>{const m=document.getElementById('m'),r=()=>{m.href='mailto:'+[...'moc.ztrihdivad@olleh'].reverse().join('')};['pointerover','focus','touchstart'].forEach(e=>m.addEventListener(e,r,{once:true,passive:true}));m.addEventListener('click',r)})();
+	(()=>{const a=[...'moc.ztrihdivad@olleh'].reverse().join(''),m=document.getElementById('m'),d=document.getElementById('impressum'),r=()=>{m.href='mailto:'+a};['pointerover','focus','touchstart'].forEach(e=>m.addEventListener(e,r,{once:true,passive:true}));m.addEventListener('click',r);d.addEventListener('toggle',()=>{const e=document.getElementById('e');e.innerHTML='<a href="mailto:'+a+'">'+a+'</a>'},{once:true});if(location.hash==='#impressum')d.open=true})();
 </script>
 </body>
 </html>
